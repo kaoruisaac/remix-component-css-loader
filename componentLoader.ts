@@ -1,6 +1,5 @@
 import { getChildComponentLink } from "./utils";
 
-/* eslint-disable @typescript-eslint/no-unused-vars */
 const StyledStartReg = /<Styled\.?[^\s>]*/gm;
 const StyledEndReg = /<\/Styled\.?[^\s>]*/gm;
 const staticClassReg = /className="[^"]/gm;

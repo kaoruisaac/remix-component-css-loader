@@ -14,15 +14,15 @@ async function buildPlugin() {
       target: 'node16',
       format: 'esm',
       outfile: 'dist/index.js',
-      external: ['react', 'vite', 'fast-glob', 'fs', 'path'],
+      external: ['react', 'vite', 'fast-glob', 'fs', 'path', 'typescript'],
       sourcemap: true,
       minify: true,
       metafile: true,
     });
     
-    console.log('構建成功！輸出文件位於 dist/index.js');
+    console.log('Build successful! Output file is at dist/index.js');
   } catch (error) {
-    console.error('構建失敗:', error);
+    console.error('Build failed:', error);
     process.exit(1);
   }
 }

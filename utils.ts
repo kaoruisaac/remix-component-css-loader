@@ -2,18 +2,18 @@ import path from 'path';
 import ts from 'typescript';
 
 export function getTsConfigAliases() {
-  // 尋找 tsconfig.json 的路徑
+  // Find the path to tsconfig.json
   const configPath = ts.findConfigFile(path.resolve(), ts.sys.fileExists, 'tsconfig.json');
   if (!configPath) {
-    throw new Error("找不到 tsconfig.json");
+    throw new Error("tsconfig.json not found");
   }
   
-  // 讀取 tsconfig.json 內容
+  // Read tsconfig.json content
   const configFile = ts.readConfigFile(configPath, ts.sys.readFile);
-  // 解析 JSON 設定，這裡也會處理 extends 等情況
+  // Parse JSON configuration, this also handles extends and other cases
   const parsed = ts.parseJsonConfigFileContent(configFile.config, ts.sys, path.dirname(configPath));
   
-  // 取得 baseUrl 與 paths
+  // Get baseUrl and paths
   const baseUrl = parsed.options.baseUrl || '.';
   const paths = parsed.options.paths || {};
   const aliases = {} as any;
@@ -45,10 +45,10 @@ export function findAllImports(content: string, resourcePath: string): Import[] 
   lines.forEach((line, index) => {
     const trimmed = line.trim();
 
-    // 匹配 import ... from 'xxx'
+    // Match import ... from 'xxx'
     const fromMatch = trimmed.match(/import\s+(.+?)\s+from\s+['"]([^'"]+)['"]/);
 
-    // 匹配 import 'xxx'
+    // Match import 'xxx'
     const sideEffectMatch = trimmed.match(/^import\s+['"]([^'"]+)['"]/);
 
     if (fromMatch) {
