@@ -9,12 +9,8 @@ import routeLoader from './routeLoader';
 const needComponentLoader: string[] = [];
 let componentList: string[] = [];
 
-export function RemixComponentCssLoader(): Plugin {
-  return {
-    name: "remix-component-css-loader",
-    enforce: "pre",
-    async buildStart() {
-      const files = await fg('app/**/*.{jsx,tsx}')
+const updateComponentList = async () => {
+  const files = await fg('app/**/*.{jsx,tsx}')
       await Promise.all(
       files.map((file) => {
         return new Promise((resolve, reject) => {
@@ -36,12 +32,23 @@ export function RemixComponentCssLoader(): Plugin {
         }
         return filePath;
       });
+}
+
+export function RemixComponentCssLoader(): Plugin {
+  return {
+    name: "remix-component-css-loader",
+    enforce: "pre",
+    async buildStart() {
+      updateComponentList();
+    },
+    async hotUpdate() {
+      updateComponentList();
     },
     transform(code, id) {
       let newCode = code;
       const resolvedPath = path.resolve(id);
       if (
-        /app\/routes\/.*\.[jt]sx$/.test(id) &&
+        /app\/.*\.[jt]sx$/.test(id) &&
         needComponentLoader.includes(resolvedPath)
       ) {
         newCode = componentLoader(code, resolvedPath, componentList);
