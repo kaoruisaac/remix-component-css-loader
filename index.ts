@@ -26,9 +26,9 @@ const updateComponentList = async () => {
       )
       componentList = needComponentLoader.map((file) => {
         const filePath = file.replace(/\.[jt]sx$/, '');
-        const filePathArray = filePath.split('\\');
+        const filePathArray = filePath.split(/[/\\]/);
         if (filePathArray[filePathArray.length - 1] === filePathArray[filePathArray.length - 2]) {
-          return filePath.replace(`\\${filePathArray[filePathArray.length - 1]}`, '');
+          return filePath.replace(new RegExp(`[/\\\\]${filePathArray[filePathArray.length - 1]}$`), '');
         }
         return filePath;
       });
