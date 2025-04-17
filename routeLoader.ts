@@ -1,9 +1,9 @@
 import { getChildComponentLink } from "./utils";
 const exportLinksReg = /^export (?:(?:const)|(?:function)) links[\s:(]/gm;
+const regex = new RegExp(exportLinksReg);
 
-function routeLoader(raw: string, resourcePath: string, componentList: string[]): string {
-  const regex = new RegExp(exportLinksReg);
-  const links = getChildComponentLink(raw, resourcePath, componentList);
+function routeLoader(raw: string, resourcePath: string, componentList: string[], middleComponentMap: Map<string, any[]>): string {
+  const links = getChildComponentLink(raw, resourcePath, componentList, middleComponentMap);
   if (!links.length) return raw;
   let newRaw = raw;
   const [found] = regex.exec(raw) || [];

@@ -38,6 +38,15 @@ interface Import {
   raw: string;
 }
 
+export const getFilePath = (file: string) => {
+  const filePath = file.replace(/\.[jt]sx$/, '');
+  const filePathArray = filePath.split(/[/\\]/);
+  if (filePathArray[filePathArray.length - 1] === filePathArray[filePathArray.length - 2]) {
+    return filePath.replace(new RegExp(`[/\\\\]${filePathArray[filePathArray.length - 1]}$`), '');
+  }
+  return path.resolve(filePath);
+}
+
 export function findAllImports(content: string, resourcePath: string): Import[] {
   const lines = content.split('\n');
   const result = [] as any[];
@@ -80,9 +89,9 @@ export function findAllImports(content: string, resourcePath: string): Import[] 
   return result;
 }
 
-export const getChildComponentLink = (raw: string, resourcePath: string, componentList: string[]) => {
+export const getChildComponentLink = (raw: string, resourcePath: string, componentList: string[], middleComponentMap?: Map<string, string[]>) => {
   const imports = findAllImports(raw, path.dirname(resourcePath));
   return imports
-    .filter(({ path }) => componentList.includes(path))
+    .filter(({ path }) => componentList.includes(path) || middleComponentMap?.has(path))
     .map(({ imported }) => `${imported}?.['STYLESHEET_LINKS']`);
 }
