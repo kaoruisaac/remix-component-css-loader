@@ -3,33 +3,41 @@ import ts from 'typescript';
 
 export function getTsConfigAliases() {
   // Find the path to tsconfig.json
-  const configPath = ts.findConfigFile(path.resolve(), ts.sys.fileExists, 'tsconfig.json');
+  let configPath;
+  try {
+    configPath = ts.findConfigFile(path.resolve(), ts.sys.fileExists, 'tsconfig.json');
+  } catch (error) {
+    console.error(error);
+  }
   if (!configPath) {
     throw new Error("tsconfig.json not found");
   }
-  
+
   // Read tsconfig.json content
   const configFile = ts.readConfigFile(configPath, ts.sys.readFile);
   // Parse JSON configuration, this also handles extends and other cases
   const parsed = ts.parseJsonConfigFileContent(configFile.config, ts.sys, path.dirname(configPath));
-  
+
   // Get baseUrl and paths
   const baseUrl = parsed.options.baseUrl || '.';
   const paths = parsed.options.paths || {};
   const aliases = {} as any;
-  
+
   for (const alias in paths) {
     const key = alias.replace(/\*$/, '');
     const targetArray = paths[alias];
     const resolvedTarget = path.resolve(path.dirname(configPath), baseUrl, targetArray[0].replace(/\*$/, ''));
     aliases[key] = resolvedTarget;
   }
-  
+
   return aliases;
 }
 
-export const aliases = getTsConfigAliases();
+let aliases = {} as any;
 
+aliases = getTsConfigAliases();
+
+export { aliases };
 interface Import {
   line: number;
   type: 'import-from' | 'side-effect';

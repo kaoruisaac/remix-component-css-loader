@@ -11,15 +11,14 @@ async function buildPlugin() {
       entryPoints: [resolve(__dirname, 'index.ts')],
       bundle: true,
       platform: 'node',
-      target: 'node16',
       format: 'esm',
       outfile: 'dist/index.js',
-      external: ['react', 'vite', 'fast-glob', 'fs', 'path', 'typescript'],
+      external: ['react', 'vite', 'fs', 'path', 'typescript'],
       sourcemap: true,
       minify: true,
       metafile: true,
     });
-    
+
     console.log('Build successful! Output file is at dist/index.js');
   } catch (error) {
     console.error('Build failed:', error);
